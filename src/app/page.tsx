@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   OutputFormat,
   Branche,
@@ -22,9 +22,23 @@ export default function Home() {
   const [selectedFormats, setSelectedFormats] = useState<OutputFormat[]>(['linkedin-post', 'karussell'])
   const [generateImg, setGenerateImg] = useState(false)
 
-  // API Key state
+  // API Key state — persisted in localStorage
   const [apiKey, setApiKey] = useState('')
   const [showApiKey, setShowApiKey] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('gemini_api_key')
+    if (saved) setApiKey(saved)
+  }, [])
+
+  const handleApiKeyChange = (val: string) => {
+    setApiKey(val)
+    if (val.trim()) {
+      localStorage.setItem('gemini_api_key', val.trim())
+    } else {
+      localStorage.removeItem('gemini_api_key')
+    }
+  }
 
   // Output state
   const [results, setResults] = useState<GeneratedContent[]>([])
@@ -110,7 +124,7 @@ export default function Home() {
                 type={showApiKey ? 'text' : 'password'}
                 placeholder="Gemini API-Key"
                 value={apiKey}
-                onChange={e => setApiKey(e.target.value)}
+                onChange={e => handleApiKeyChange(e.target.value)}
                 className="bg-brand-card border border-brand-border rounded-lg px-3 py-2 text-sm text-white w-56 placeholder:text-brand-muted"
               />
               <button
