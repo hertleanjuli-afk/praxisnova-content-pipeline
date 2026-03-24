@@ -9,9 +9,9 @@ const BRANCHE_CONTEXT: Record<Branche, string> = {
 
 function getFormatPrompt(format: OutputFormat, branche: Branche, tone: string): string {
   const toneInstructions: Record<string, string> = {
-    professionell: 'Schreibe professionell, sachlich und kompetent. Nutze Fachbegriffe wo sinnvoll.',
-    locker: 'Schreibe locker, nahbar und persoenlich. Nutze Du-Ansprache und kurze Saetze. Kein Corporate-Sprech.',
-    inspirierend: 'Schreibe motivierend und visionaer. Male ein Bild der Zukunft. Nutze emotionale Sprache.',
+    professionell: 'Schreibe professionell, sachlich und kompetent. Nutze Fachbegriffe wo sinnvoll, aber bleibe verstaendlich.',
+    locker: 'Schreibe locker, nahbar und persoenlich. Kurze Saetze, kein Corporate-Sprech, wie ein Gespraech unter Kollegen.',
+    inspirierend: 'Schreibe motivierend und visionaer. Male ein Bild der Zukunft. Nutze emotionale Sprache die begeistert.',
   }
 
   const base = `Du bist Content-Experte fuer PraxisNova AI, ein Unternehmen das KI-Automatisierung fuer Bau, Handwerk und Immobilien anbietet.
@@ -20,24 +20,28 @@ ${BRANCHE_CONTEXT[branche]}
 
 Tonalitaet: ${toneInstructions[tone] || toneInstructions.professionell}
 
-WICHTIG:
-- Schreibe auf Deutsch
-- Verwende KEINE Em-Dashes oder Sonderzeichen wie —
-- Nutze Punkte und Kommas statt Gedankenstriche
-- Kein Denglisch ausser gaengigen Begriffen (KI, LinkedIn, Content)
-- Jeder Text muss einen klaren Call-to-Action haben
-- Erwaehne PraxisNova AI als Absender/Marke
+STRIKTE REGELN (ALLE muessen eingehalten werden):
+1. Schreibe auf Deutsch.
+2. Verwende IMMER die Du-Ansprache. NIEMALS Sie/Ihnen/Ihrer. Immer du/dein/deine/dir/dich.
+3. Verwende KEINE Gedankenstriche, Em-Dashes, En-Dashes oder aehnliche Sonderzeichen. Kein — und kein –. Nutze stattdessen Punkte, Kommas oder Doppelpunkte.
+4. Verwende KEINE Sonderzeichen wie ➡️ oder → in Ueberschriften.
+5. Kein Denglisch ausser gaengigen Begriffen (KI, LinkedIn, Content, Post).
+6. Jeder Text muss einen klaren Call-to-Action haben.
+7. Erwaehne PraxisNova AI als Absender/Marke.
+8. Achte auf korrekte deutsche Rechtschreibung und Grammatik (der/die/das, Kommasetzung).
+9. Schreibe kurze, klare Saetze. Maximal 15 Woerter pro Satz.
 `
 
   const formatInstructions: Record<OutputFormat, string> = {
     'linkedin-post': `${base}
 Erstelle einen LinkedIn-Post:
-- Starte mit einem starken Hook (erste 2 Zeilen entscheiden ob jemand weiterliest)
+- Starte mit einem starken Hook (erste 2 Zeilen entscheiden, ob jemand weiterliest)
 - Nutze Absaetze und Zeilenumbrueche fuer Lesbarkeit
 - Maximal 3.000 Zeichen
 - Ende mit einem CTA und 3-5 relevanten Hashtags
 - Format: Hook > Problem > Loesung > CTA > Hashtags
-- Gib NUR den Post-Text zurueck, keine Erklaerungen`,
+- Die Zielgruppe wird geduzt: "Kennst du das?" nicht "Kennen Sie das?"
+- Gib NUR den Post-Text zurueck, keine Erklaerungen drumherum`,
 
     'facebook-post': `${base}
 Erstelle einen Facebook-Post:
@@ -47,25 +51,27 @@ Erstelle einen Facebook-Post:
 - 1-2 relevante Emojis sind erlaubt
 - CTA am Ende
 - 2-3 Hashtags maximal
-- Gib NUR den Post-Text zurueck, keine Erklaerungen`,
+- Immer Du-Ansprache, lockerer Ton
+- Gib NUR den Post-Text zurueck, keine Erklaerungen drumherum`,
 
     'newsletter': `${base}
-Erstelle einen Newsletter-Text fuer E-Mail:
+Erstelle einen Newsletter-Text fuer E-Mail (Brevo):
 - Erste Zeile: Betreffzeile (mit "Betreff:" davor)
 - Dann eine Leerzeile
 - Dann der E-Mail-Body
-- Persoenliche Ansprache ("Hallo [Name]")
+- Persoenliche Ansprache: "Hallo [Name]," (mit Du)
 - Maximal 3 Absaetze
 - Klarer CTA-Button-Text am Ende (mit "CTA-Button:" davor)
-- Gib NUR den Newsletter-Text zurueck, keine Erklaerungen`,
+- Gib NUR den Newsletter-Text zurueck, keine Erklaerungen drumherum`,
 
     'karussell': `${base}
 Erstelle Texte fuer ein LinkedIn-Karussell (7 Slides):
-- Slide 1 (Cover): Titel und Untertitel
-- Slides 2-6: Jeweils eine Headline und ein kurzer Body-Text (max 2 Saetze)
-- Slide 7 (CTA): Call-to-Action Text
+- Slide 1 (Cover): Titel und Untertitel. Titel maximal 10 Woerter.
+- Slides 2-6: Jeweils eine Headline (max 4 Woerter) und ein kurzer Body-Text (max 2 Saetze, max 120 Zeichen)
+- Slide 7 (CTA): Call-to-Action Text (max 6 Woerter)
+- WICHTIG: Texte muessen auf einer 1080x1350px Slide lesbar sein. Halte sie KURZ.
 
-Format EXAKT so:
+Format EXAKT so (keine Abweichung):
 COVER-TITEL: [Titel]
 COVER-UNTERTITEL: [Untertitel]
 SLIDE-2-HEADLINE: [Headline]
@@ -84,9 +90,9 @@ Gib NUR die Slide-Texte in diesem Format zurueck, keine Erklaerungen.`,
 
     'thread': `${base}
 Erstelle einen LinkedIn-Thread (4 zusammenhaengende Posts):
-- Post 1: Hook und Einleitung (startet die Geschichte)
-- Post 2: Hauptinhalt/Problem
-- Post 3: Loesung/Erkenntnis
+- Post 1: Hook und Einleitung (startet die Geschichte, macht neugierig)
+- Post 2: Hauptinhalt/Problem vertiefen
+- Post 3: Loesung/Erkenntnis praesentieren
 - Post 4: CTA und Zusammenfassung
 
 Format:
@@ -99,7 +105,7 @@ Format:
 --- POST 4 ---
 [Text]
 
-Jeder Post maximal 1.500 Zeichen.
+Jeder Post maximal 1.500 Zeichen. Immer Du-Ansprache.
 Gib NUR die Thread-Posts zurueck, keine Erklaerungen.`,
   }
 
