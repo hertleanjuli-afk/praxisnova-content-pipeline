@@ -32,10 +32,10 @@ export const FORMAT_LABELS: Record<OutputFormat, string> = {
 
 export const FORMAT_DESCRIPTIONS: Record<OutputFormat, string> = {
   'linkedin-post': 'Ein einzelner LinkedIn-Post mit Hook, Inhalt und CTA (max. 3.000 Zeichen)',
-  'facebook-post': 'Ein Facebook-Post, kuerzer und lockerer als LinkedIn (max. 500 Zeichen)',
-  'newsletter': 'E-Mail-Newsletter-Text fuer Brevo mit Betreffzeile und Inhalt',
-  'karussell': 'Slide-Texte fuer den Karussell-Generator (Cover + 5 Slides + CTA)',
-  'thread': 'LinkedIn-Thread mit 3-5 zusammenhaengenden Posts',
+  'facebook-post': 'Ein Facebook-Post, kürzer und lockerer als LinkedIn (max. 500 Zeichen)',
+  'newsletter': 'E-Mail-Newsletter-Text für Brevo mit Betreffzeile und Inhalt',
+  'karussell': 'Slide-Texte für den Karussell-Generator (Cover + 5 Slides + CTA)',
+  'thread': 'LinkedIn-Thread mit 3-5 zusammenhängenden Posts',
 }
 
 export const BRANCHE_LABELS: Record<Branche, string> = {

@@ -44,7 +44,7 @@ export default function Home() {
       return
     }
     if (selectedFormats.length === 0) {
-      setError('Bitte waehle mindestens ein Format.')
+      setError('Bitte wähle mindestens ein Format.')
       return
     }
     if (!apiKey.trim()) {
@@ -144,7 +144,7 @@ export default function Home() {
               />
               <div className="flex justify-between mt-1">
                 <span className="text-brand-muted text-xs">
-                  Tipp: Je mehr Details, desto besser die Ergebnisse
+                  Tipp: Je mehr Details, desto besser die Ergebnisse.
                 </span>
                 <span className="text-brand-muted text-xs">{input.length} Zeichen</span>
               </div>
@@ -152,7 +152,7 @@ export default function Home() {
 
             {/* Branche Selection */}
             <div>
-              <label className="block text-white font-semibold text-sm mb-2">Zielbranche</label>
+              <label className="block text-white font-semibold text-sm mb-2">Ziel-Branche</label>
               <div className="grid grid-cols-2 gap-2">
                 {(Object.entries(BRANCHE_LABELS) as [Branche, string][]).map(([key, label]) => (
                   <button
@@ -172,7 +172,7 @@ export default function Home() {
 
             {/* Tone Selection */}
             <div>
-              <label className="block text-white font-semibold text-sm mb-2">Tonalitaet</label>
+              <label className="block text-white font-semibold text-sm mb-2">Tonalität</label>
               <div className="grid grid-cols-3 gap-2">
                 {Object.entries(TONE_LABELS).map(([key, label]) => (
                   <button
@@ -286,7 +286,7 @@ export default function Home() {
                 <div className="text-4xl mb-4">✨</div>
                 <h3 className="text-white font-semibold mb-1">Bereit zum Generieren</h3>
                 <p className="text-brand-muted-light text-sm text-center max-w-xs">
-                  Schreibe links dein Thema oder deine Idee, waehle die Formate und klicke auf Generieren.
+                  Schreibe links dein Thema oder deine Idee, wähle die Formate und klicke auf Generieren.
                 </p>
               </div>
             )}
