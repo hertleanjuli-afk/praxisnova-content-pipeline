@@ -1,8 +1,8 @@
 import { OutputFormat, Branche, GeneratedContent, FORMAT_LABELS } from '@/types/content'
 import { buildPrompt, buildImagePrompt } from './prompts'
 
-const GEMINI_TEXT_MODEL = 'gemini-1.5-flash'
-const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp'
+const GEMINI_TEXT_MODEL = 'gemini-2.0-flash-lite'
+const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash'
 
 export async function generateContent(
   apiKey: string,
@@ -14,7 +14,7 @@ export async function generateContent(
   const prompt = buildPrompt(input, format, branche, tone)
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1/models/${GEMINI_TEXT_MODEL}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
