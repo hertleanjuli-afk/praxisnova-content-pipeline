@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-bg: #0A0A0A;
+  --brand-accent: #E8472A;
+  --brand-card: #111111;
+  --brand-muted: #555555;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--brand-bg);
+  color: #ffffff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Textarea styling */
+textarea:focus, input:focus, select:focus {
+  outline: none;
+  border-color: var(--brand-accent) !important;
+  box-shadow: 0 0 0 2px rgba(232, 71, 42, 0.2);
+}
+
+/* Smooth transitions */
+* { transition: border-color 0.2s, box-shadow 0.2s; }
+
+/* Pulse animation for generating state */
+@keyframes pulse-accent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-accent { animation: pulse-accent 1.5s ease-in-out infinite; }
