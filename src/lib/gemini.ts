@@ -57,17 +57,32 @@ export async function generateImage(
   const prompt = buildImagePrompt(input, branche)
 
   try {
-        // Call server-side route to bypass geo-restrictions on image generation
-        const response = await fetch('/api/generate-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ apiKey, prompt }),
-        })
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            responseModalities: ['TEXT', 'IMAGE'],
+          },
+        }),
+      }
+    )
 
-        if (!response.ok) return null
+    if (!response.ok) return null
 
-        const data = await response.json()
-        return data.imageData || null
+    const data = await response.json()
+    const parts = data.candidates?.[0]?.content?.parts || []
+
+    for (const part of parts) {
+      if (part.inlineData?.mimeType?.startsWith('image/')) {
+        return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+      }
+    }
+
+    return null
   } catch {
     return null
   }
