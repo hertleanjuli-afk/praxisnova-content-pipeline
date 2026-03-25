@@ -1,8 +1,8 @@
 import { OutputFormat, Branche, GeneratedContent, FORMAT_LABELS } from '@/types/content'
 import { buildPrompt, buildImagePrompt } from './prompts'
 
-const GEMINI_TEXT_MODEL = 'gemini-2.0-flash-lite'
-const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash'
+const GEMINI_TEXT_MODEL = 'gemini-2.5-flash'
+const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash'
 
 export async function generateContent(
   apiKey: string,
