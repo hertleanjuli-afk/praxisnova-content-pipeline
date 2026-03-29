@@ -15,6 +15,9 @@ export interface GeneratedContent {
   content: string
   charCount: number
   hashtags?: string[]
+  charWarning?: string
+  optimizationTip?: string
+  variantB?: string
 }
 
 export interface GenerateResponse {

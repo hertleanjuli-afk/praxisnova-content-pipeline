@@ -1,47 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash'
+import { buildImagePrompt } from '@/lib/prompts'
+import { Branche } from '@/types/content'
 
 export async function POST(request: NextRequest) {
+  try {
+    const { prompt, branche } = await request.json()
+
+    if (!prompt) {
+      return NextResponse.json({ error: 'Missing prompt' }, { status: 400 })
+    }
+
+    const imagePrompt = branche
+      ? buildImagePrompt(prompt, branche as Branche)
+      : prompt
+
+    const encodedPrompt = encodeURIComponent(imagePrompt)
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1080&nologo=true&seed=${Date.now()}`
+
+    // Verify Pollinations is reachable
     try {
-          const { apiKey, prompt } = await request.json()
+      const check = await fetch(pollinationsUrl, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(20000),
+      })
 
-          if (!apiKey || !prompt) {
-                  return NextResponse.json({ error: 'Missing apiKey or prompt' }, { status: 400 })
-                }
+      if (check.ok) {
+        return NextResponse.json({ imageData: pollinationsUrl })
+      }
+    } catch {
+      // Pollinations failed, try Together.ai
+    }
 
-          const response = await fetch(
-                  `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${apiKey}`,
-                  {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                        contents: [{ parts: [{ text: prompt }] }],
-                                        generationConfig: {
-                                                      responseModalities: ['TEXT', 'IMAGE'],
-                                                    },
-                                      }),
-                          }
-                )
+    // Fallback: Together.ai FLUX.1-schnell
+    const togetherKey = process.env.TOGETHER_API_KEY
+    if (togetherKey) {
+      const response = await fetch('https://api.together.xyz/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${togetherKey}`,
+        },
+        body: JSON.stringify({
+          model: 'black-forest-labs/FLUX.1-schnell-Free',
+          prompt: imagePrompt,
+          width: 1024,
+          height: 1024,
+          n: 1,
+        }),
+        signal: AbortSignal.timeout(30000),
+      })
 
-          if (!response.ok) {
-                  const error = await response.text()
-                  return NextResponse.json({ error }, { status: response.status })
-                }
-
-          const data = await response.json()
-          const parts = data.candidates?.[0]?.content?.parts || []
-
-          for (const part of parts) {
-                  if (part.inlineData?.mimeType?.startsWith('image/')) {
-                            return NextResponse.json({
-                                        imageData: `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
-                                      })
-                          }
-                }
-
-          return NextResponse.json({ imageData: null })
-        } catch (error) {
-          return NextResponse.json({ error: String(error) }, { status: 500 })
+      if (response.ok) {
+        const data = await response.json()
+        const imageUrl = data.data?.[0]?.url
+        if (imageUrl) {
+          return NextResponse.json({ imageData: imageUrl })
         }
+      }
+    }
+
+    return NextResponse.json({ imageData: null })
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 })
   }
+}
